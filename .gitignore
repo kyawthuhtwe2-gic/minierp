@@ -10,7 +10,7 @@
 !/.gitignore
 !/LICENSE
 !/README.md
-!/developer.guide.md
+!/guide/
 !/CLAUDE.md
 !/compose.yaml
 !/run.bat
