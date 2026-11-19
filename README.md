@@ -325,7 +325,3 @@ npm run build
 - Business logic တိုးလာပါက Controller ထဲတွင် အလွန်အကျွံမထည့်ဘဲ သင့်လျော်သလို service/component အဖြစ်ခွဲထားပါ။
 - API endpoint အသစ်၊ migration နှင့် frontend service ကို တစ်ပြိုင်နက် update လုပ်ပါ။
 - Architect-level prompt templates ကို [developer.guide.md](developer.guide.md) တွင်ရယူနိုင်ပါတယ်။
-
-## License
-
-MIT License — အသေးစိတ် [LICENSE](LICENSE) တွင်ကြည့်နိုင်ပါတယ်။
