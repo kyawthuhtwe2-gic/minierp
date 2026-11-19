@@ -8,6 +8,16 @@
 # directory must be added here or git will drop it silently — no error, and
 # `git status` stays clean. Verify with: git status --ignored
 !/.gitignore
+!/.claude/
+/.claude/*
+!/.claude/CLAUDE.md
+!/.claude/settings.json
+!/.github/
+/.github/*
+!/.github/copilot-instructions.md
+!/.vscode/
+/.vscode/*
+!/.vscode/settings.json
 !/LICENSE
 !/README.md
 !/guide/
