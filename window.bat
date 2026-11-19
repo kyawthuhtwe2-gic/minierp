@@ -17,7 +17,7 @@ REM Docker Desktop အလုပ်လုပ်နေပြီး Docker engine �
 docker info >nul 2>&1
 if errorlevel 1 (
     echo Docker Desktop is not running.
-    echo Start Docker Desktop, wait until it reports that Docker is running, then run run.bat again.
+    echo Start Docker Desktop, wait until it reports that Docker is running, then run window.bat again.
     pause
     exit /b 1
 )

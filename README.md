@@ -128,7 +128,8 @@ MiniERP/
 │   ├── package.json
 │   └── .env.example
 ├── compose.yaml
-├── run.bat
+├── window.bat
+├── mac.sh
 ├── README.md
 └── developer.guide.md
 ```
@@ -165,7 +166,8 @@ Feature အသစ်တစ်ခုချိန်တွင် Laravel route၊ 
 
 - Docker Desktop
 - Docker Compose
-- Windows run script အတွက် Windows environment
+- `window.bat` အတွက် Windows environment
+- `mac.sh` အတွက် macOS သို့မဟုတ် Linux shell
 
 Local PHP/Node ဖြင့် run လိုပါက PHP 8.3+၊ Composer၊ Node.js၊ npm နှင့် MySQL လိုအပ်ပါတယ်။
 
@@ -173,11 +175,19 @@ Local PHP/Node ဖြင့် run လိုပါက PHP 8.3+၊ Composer၊ No
 
 Repository root မှ:
 
+Windows မှာ:
+
 ```bat
-.\run.bat
+.\window.bat
 ```
 
-`run.bat` က —
+macOS/Linux မှာ repository root မှ:
+
+```sh
+sh ./mac.sh
+```
+
+`window.bat` နှင့် `mac.sh` တို့က —
 
 1. Docker Desktop ရှိမရှိစစ်ဆေးပါတယ်။
 2. `backend/.env` နှင့် `frontend/.env` မရှိလျှင် `.env.example` မှဖန်တီးပါတယ်။

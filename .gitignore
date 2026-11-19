@@ -23,7 +23,8 @@
 !/guide/
 !/CLAUDE.md
 !/compose.yaml
-!/run.bat
+!/window.bat
+!/mac.sh
 
 # Skills are whitelisted by name: re-include skills/ itself, re-exclude its
 # children, then name the tracked ones. (A child cannot be re-included while
