@@ -1,8 +1,4 @@
 {
-  "search.exclude": {
-    "**/guide/**": true
-  },
-  "files.exclude": {
-    "**/guide": true
-  }
+  "search.exclude": {},
+  "files.exclude": {}
 }
