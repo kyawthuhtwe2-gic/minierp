@@ -21,6 +21,7 @@
 !/LICENSE
 !/README.md
 !/guide/
+!/guide/**
 !/CLAUDE.md
 !/compose.yaml
 !/window.bat
