@@ -1,14 +1,50 @@
 # MiniERP
 
-MiniERP သည် React၊ Vite၊ Laravel နှင့် MySQL ဖြင့်တည်ဆောက်ထားသည့် local development starter project ဖြစ်ပါတယ်။ လက်ရှိ frontend တွင် MiniERP starter screen ကိုပြသထားပြီး backend သည် Laravel welcome route နှင့် migration-ready MySQL setup ကိုပေးထားပါတယ်။
+MiniERP သည် React၊ Vite၊ Laravel နှင့် MySQL ဖြင့်တည်ဆောက်ထားသည့် local development project ဖြစ်ပါတယ်။ Laravel Passport JWT login နှင့် role-based authorization ပါဝင်ပါတယ်။
 
 ## လက်ရှိအခြေအနေ
 
-- React/Vite frontend သည် `http://localhost:5173` တွင် run ပါမယ်။
+- React/Vite frontend သည် `http://localhost:5173` တွင် run ပြီး login page ကိုပြသပါတယ်။
 - Laravel backend သည် `http://localhost:8000` တွင် run ပါမယ်။
 - MySQL 8.4 သည် host port `3307` တွင်ရရှိနိုင်ပါတယ်။
-- Frontend မှ `VITE_API_URL=http://localhost:8000/api` ကိုအသုံးပြုနိုင်သော်လည်း လက်ရှိတွင် API call မခေါ်သေးပါ။
+- Login-only authentication (Passport access token၊ ၆၀ မိနစ်သက်တမ်း)။ Registration မပါပါ။
+- Role ကို `users.role` column တွင်သိမ်းပြီး request တိုင်းတွင် database မှဖတ်ပါတယ်။ Role အမည်အသစ်ထည့်ရန် schema မပြောင်းရပါ။
 - Backend startup တွင် migrations ကိုအလိုအလျောက် run ပါမယ်။
+
+## အမြန်စတင်ရန် (Quick start)
+
+Repository root မှ အဆင့်အတိုင်း run ပါ။
+
+1. Services စတင်ရန် (terminal တစ်ခုတွင် ဆက်လက် run နေမည်):
+
+   ```bat
+   .\window.bat
+   ```
+
+   macOS/Linux: `sh ./mac.sh`
+
+2. Backend စတင်ပြီးနောက် terminal အသစ်တစ်ခုတွင် auth setup (တစ်ကြိမ်သာလိုပြီး ထပ်run လည်းလုံခြုံသည်):
+
+   ```bat
+   .\setup-auth.bat
+   ```
+
+   macOS/Linux: `sh ./setup-auth.sh`
+
+3. Backend ကို restart လုပ်ပါ:
+
+   ```powershell
+   docker compose restart backend
+   ```
+
+4. http://localhost:5173 ကိုဖွင့်ပြီး sign in လုပ်ပါ။
+
+| Email | Password | Role |
+| :--- | :--- | :--- |
+| `admin@example.com` | `Admin@123456` | `admin` |
+| `staff@example.com` | `Staff@123456` | `staff` |
+
+ပထမဆုံး login ပြီးနောက် password ကိုပြောင်းပါ။ `backend/.env` တွင် `ADMIN_EMAIL` / `ADMIN_PASSWORD` သတ်မှတ်ပါက seeder က ၎င်းတို့ကိုသုံးပါတယ်။ Production တွင် default password ဖြင့် seed လုပ်ခွင့်မပြုပါ။
 
 ## Technology stack
 
@@ -119,28 +155,35 @@ MiniERP/
 ├── frontend/                 # React 19 single-page application
 │   ├── src/
 │   │   ├── assets/           # Images and static assets
-│   │   ├── components/       # Reusable UI components
-│   │   ├── pages/            # Page components
-│   │   ├── services/         # API and service logic
-│   │   ├── App.jsx
+│   │   ├── components/       # Shared UI
+│   │   │   ├── AppShell.jsx      # Fixed header (brand, avatar, sign out)
+│   │   │   ├── WelcomeHero.jsx   # Welcome text (inside admin/user pages)
+│   │   │   └── AccessGrid.jsx    # Server-checked access cards
+│   │   ├── pages/
+│   │   │   ├── auth/         # LoginPage
+│   │   │   ├── admin/        # AdminHome (role: admin)
+│   │   │   └── user/         # UserHome, StaffDashboard (other roles)
+│   │   ├── services/         # api.js (API client)
+│   │   ├── App.jsx           # Login or role-based home
 │   │   └── main.jsx
 │   ├── public/
 │   ├── package.json
 │   └── .env.example
 ├── compose.yaml
-├── window.bat
-├── mac.sh
+├── window.bat / mac.sh       # Services စတင်ရန်
+├── setup-auth.bat / .sh      # Auth setup (migrate, keys, client, admin)
+├── test-api.bat / .sh        # Backend tests (in-memory SQLite)
 ├── README.md
 └── developer.guide.md
 ```
 
-`frontend/src/components/`, `pages/` နှင့် `services/` directory များသည် feature များထည့်ရန် placeholder ဖြစ်ပြီး `backend/routes/api.php` သည် လက်ရှိတွင်မပါသေးပါ။
+`frontend/src/pages/` ကို role အလိုက်ခွဲထားသည်: `auth/` (LoginPage)၊ `admin/` (AdminHome)၊ `user/` (UserHome၊ StaffDashboard)။ Header ကို `components/AppShell` တွင်တစ်နေရာတည်းထားပြီး welcome စာသားကို `WelcomeHero` ဖြင့် admin/user page အတွင်းသာပြသည်။ `frontend/src/services/api.js` တွင် API client ရှိပြီး `backend/routes/api.php` တွင် auth routes ရှိပါတယ်။
 
 ## Frontend architecture
 
 Frontend သည် React 19 နှင့် Vite 8 ကိုအသုံးပြုပြီး `frontend/src/main.jsx` မှ `App` component ကို `#root` element ထဲတွင် mount လုပ်ပါတယ်။
 
-- `App.jsx` သည် root starter UI နှင့် local counter state ကိုထားပါတယ်။
+- `App.jsx` သည် session (`sessionStorage` token) ကိုစစ်ပြီး `LoginPage` သို့မဟုတ် role အလိုက် `AdminHome` (admin) / `UserHome` (အခြား role) ကိုပြသပါတယ်။
 - `pages/` တွင် ERP page components ကိုထည့်ရန်သင့်ပါတယ်။
 - `components/` တွင် ပြန်သုံးနိုင်သည့် UI components ကိုထည့်ပါ။
 - `services/` တွင် API request နှင့် server data handling ကိုထားပါ။
@@ -211,6 +254,49 @@ Local data ကိုထိမထားဘဲ container များကိုပ�
 ```powershell
 docker compose down
 docker compose up --build
+```
+
+## Auth setup အသေးစိတ်
+
+`setup-auth.bat` / `setup-auth.sh` သည် အောက်ပါအဆင့်များကို Docker ထဲတွင် run ပါတယ်။ Data မဖျက်ပါ။
+
+1. `docker compose build backend` - code ကို image ထဲသို့ပြန်ထည့်သည်။
+2. `php artisan migrate --force` - `role` column နှင့် OAuth tables ကိုထပ်ထည့်သည်။
+3. Passport keys ကိုမရှိမှသာ generate လုပ်ပြီး permission `600` ထားသည်။
+4. `PersonalAccessClientSeeder` - personal access client မရှိမှသာဖန်တီးသည်။ ၎င်းမရှိလျှင် login တွင် `Personal access client not found` error ပေါ်သည်။
+5. `AdminUserSeeder` - Admin account ကို `updateOrCreate` ဖြင့်ဖန်တီးသည်။ Password ကို ပထမဆုံးဖန်တီးချိန်တွင်သာသတ်မှတ်သည်။
+6. `StaffUserSeeder` - Staff account ကို အလားတူဖန်တီးသည် (`STAFF_EMAIL` / `STAFF_PASSWORD` ကို `backend/.env` တွင်ပြောင်းနိုင်သည်)။
+
+Passport keys သည် `backend-storage` volume ထဲ (`storage/oauth-*.key`) တွင်ရှိပြီး git ထဲမပါပါ။ Volume ကိုဖျက်လျှင် `setup-auth` ကိုပြန် run ပါ၊ ယခင် token များသုံးမရတော့ပါ။
+
+## API endpoints
+
+| Method | Endpoint | Access |
+| :--- | :--- | :--- |
+| POST | `/api/login` | Public (မိနစ်လျှင် ၅ ကြိမ် rate limit) |
+| GET | `/api/me` | Login ဝင်ထားသူ |
+| POST | `/api/logout` | Login ဝင်ထားသူ (token revoke) |
+| GET | `/api/admin/dashboard` | `admin` |
+| GET | `/api/management` | `admin`, `manager` |
+| GET | `/api/staff/dashboard` | `staff` |
+
+Response status: token မရှိ/မမှန်/သက်တမ်းကုန်/revoke ဖြစ်လျှင် `401`၊ role မလုံလောက်လျှင် `403`။ Route တွင် `role:admin,manager` ကဲ့သို့ role အမည်များကိုကော်မာဖြင့်ခွဲ၍ထည့်ပါ။
+
+Postman / curl ဥပမာ:
+
+```sh
+curl -X POST http://localhost:8000/api/login \
+  -H "Accept: application/json" -H "Content-Type: application/json" \
+  -d '{"email":"admin@example.com","password":"Admin@123456"}'
+
+curl http://localhost:8000/api/me \
+  -H "Accept: application/json" -H "Authorization: Bearer <access_token>"
+```
+
+User ၏ role ပြောင်းရန် database တွင်တိုက်ရိုက်ပြင်ပါ (မည်သည့် role အမည်မဆိုရသည်):
+
+```sql
+UPDATE users SET role = 'manager' WHERE email = 'user@example.com';
 ```
 
 ## Access URLs
@@ -313,6 +399,18 @@ npm run dev
 ## Tests နှင့် quality checks
 
 ### Backend
+
+> သတိ: Tests များသည် `RefreshDatabase` သုံးသောကြောင့် ချိတ်ထားသော database ကို **ဖျက်ပစ်ပါတယ်**။ `docker compose run ... php artisan test` ကို တိုက်ရိုက်မ run ပါနှင့်၊ MySQL data ပျက်မည်။ အောက်ပါ script ကိုသာသုံးပါ။
+
+Docker ဖြင့် (in-memory SQLite ကိုအတင်းသုံးပြီး MySQL ကိုမထိပါ):
+
+```bat
+.\test-api.bat
+```
+
+macOS/Linux: `sh ./test-api.sh`
+
+Docker မပါဘဲ local PHP ဖြင့် run လျှင် `pdo_sqlite` ဖွင့်ထားပြီး `APP_KEY` ရှိရမည်:
 
 ```powershell
 Set-Location .\backend

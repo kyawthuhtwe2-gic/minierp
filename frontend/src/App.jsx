@@ -1,123 +1,45 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useEffect, useState } from 'react'
+import AdminHome from './pages/admin/AdminHome'
+import LoginPage from './pages/auth/LoginPage'
+import UserHome from './pages/user/UserHome'
+import { logout, me, tokenStore } from './services/api'
 
 function App() {
-  const [count, setCount] = useState(0)
-  const apiUrl = import.meta.env.VITE_API_URL || 'Not configured'
+  const [user, setUser] = useState(null)
+  const [checking, setChecking] = useState(Boolean(tokenStore.get()))
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>MiniERP</h1>
-          <p>
-            React frontend is ready. API base URL: <code>{apiUrl}</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+  // Restore the session from a stored token; drop it if the API rejects it.
+  useEffect(() => {
+    if (!tokenStore.get()) return
+    me()
+      .then((data) => setUser(data.user))
+      .catch(() => tokenStore.clear())
+      .finally(() => setChecking(false))
+  }, [])
 
-      <div className="ticks"></div>
+  function handleLoggedIn(token, loggedInUser) {
+    tokenStore.set(token)
+    setUser(loggedInUser)
+  }
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+  async function handleLogout() {
+    try {
+      await logout()
+    } catch {
+      // Token may already be invalid; sign out locally either way.
+    }
+    tokenStore.clear()
+    setUser(null)
+  }
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+  if (checking) return null
+
+  if (!user) return <LoginPage onLoggedIn={handleLoggedIn} />
+
+  // Pick the UI area by role; the API still enforces permissions on every call.
+  const Home = user.role === 'admin' ? AdminHome : UserHome
+  return <Home user={user} onLogout={handleLogout} />
+
 }
 
 export default App
