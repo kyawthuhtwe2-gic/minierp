@@ -297,10 +297,8 @@ npm run build
 Repository instructions:
 - README.md
 - CLAUDE.md
-- developer.guide.md
-- skills/architecture-review/SKILL.md
-- skills/testing/SKILL.md
-- skills/security-audit/SKILL.md
+- commands/**
+- skills/**
 
 Task:
 "Products" feature အတွက် architecture နှင့် implementation plan ဆွဲပါ။

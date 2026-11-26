@@ -10,20 +10,20 @@ use RuntimeException;
 
 class AdminUserSeeder extends Seeder
 {
-    private const DEFAULT_PASSWORD = 'Admin@123456';
-
     public function run(): void
     {
-        $email = env('ADMIN_EMAIL', 'admin@example.com');
-        $password = env('ADMIN_PASSWORD', self::DEFAULT_PASSWORD);
+        $name = env('ADMIN_NAME',);
+        $email = env('ADMIN_EMAIL');
+        $password = env('ADMIN_PASSWORD');
+        $role = env('ADMIN_ROLE');
 
-        if (app()->isProduction() && $password === self::DEFAULT_PASSWORD) {
-            throw new RuntimeException('Set ADMIN_PASSWORD in .env before seeding the admin in production.');
+        if (app()->isProduction() && (!$name || ! $email || ! $password || ! $role)) {
+            throw new RuntimeException('Set ADMIN_NAME, ADMIN_EMAIL, ADMIN_PASSWORD, and ADMIN_ROLE in .env before seeding the admin in production.');
         }
 
         $exists = User::query()->where('email', $email)->exists();
 
-        $values = ['name' => 'Administrator', 'role' => 'admin', 'email_verified_at' => now()];
+        $values = ['name' => $name, 'role' => $role, 'email_verified_at' => now()];
 
         // Set password only on first creation so re-running never resets a changed password.
         if (! $exists) {

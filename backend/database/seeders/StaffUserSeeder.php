@@ -10,20 +10,20 @@ use RuntimeException;
 
 class StaffUserSeeder extends Seeder
 {
-    private const DEFAULT_PASSWORD = 'Staff@123456';
-
     public function run(): void
     {
-        $email = env('STAFF_EMAIL', 'staff@example.com');
-        $password = env('STAFF_PASSWORD', self::DEFAULT_PASSWORD);
+        $name = env('STAFF_NAME');
+        $email = env('STAFF_EMAIL');
+        $password = env('STAFF_PASSWORD');
+        $role = env('STAFF_ROLE');
 
-        if (app()->isProduction() && $password === self::DEFAULT_PASSWORD) {
-            throw new RuntimeException('Set STAFF_PASSWORD in .env before seeding the staff user in production.');
+        if (app()->isProduction() && (!$name || ! $email || ! $password || ! $role)) {
+            throw new RuntimeException('Set STAFF_NAME, STAFF_EMAIL, STAFF_PASSWORD, and STAFF_ROLE in .env before seeding the staff user in production.');
         }
 
         $exists = User::query()->where('email', $email)->exists();
 
-        $values = ['name' => 'Staff User', 'role' => 'staff', 'email_verified_at' => now()];
+        $values = ['name' => $name, 'role' => $role, 'email_verified_at' => now()];
 
         // Password only on first creation; re-running never resets a changed password.
         if (! $exists) {
