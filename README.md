@@ -156,8 +156,8 @@ MiniERP/
 │   ├── src/
 │   │   ├── assets/           # Images and static assets
 │   │   ├── components/       # Shared UI
-│   │   │   ├── AppShell.jsx      # Fixed header (brand, avatar, sign out)
-│   │   │   ├── WelcomeHero.jsx   # Welcome text (inside admin/user pages)
+│   │   │   ├── AppShell.jsx      # Fixed header + content area
+│   │   │   ├── UserMenu.jsx      # Header name/email + profile popup (Logout)
 │   │   │   └── AccessGrid.jsx    # Server-checked access cards
 │   │   ├── pages/
 │   │   │   ├── auth/         # LoginPage
@@ -177,7 +177,7 @@ MiniERP/
 └── developer.guide.md
 ```
 
-`frontend/src/pages/` ကို role အလိုက်ခွဲထားသည်: `auth/` (LoginPage)၊ `admin/` (AdminHome)၊ `user/` (UserHome၊ StaffDashboard)။ Header ကို `components/AppShell` တွင်တစ်နေရာတည်းထားပြီး welcome စာသားကို `WelcomeHero` ဖြင့် admin/user page အတွင်းသာပြသည်။ `frontend/src/services/api.js` တွင် API client ရှိပြီး `backend/routes/api.php` တွင် auth routes ရှိပါတယ်။
+`frontend/src/pages/` ကို role အလိုက်ခွဲထားသည်: `auth/` (LoginPage)၊ `admin/` (AdminHome)၊ `user/` (UserHome၊ StaffDashboard)။ Header ကို `components/AppShell` တွင်တစ်နေရာတည်းထားပြီး user name/email နှင့် Logout popup ကို `components/UserMenu` ဖြင့်ပြသည်။ `frontend/src/services/api.js` တွင် API client ရှိပြီး `backend/routes/api.php` တွင် auth routes ရှိပါတယ်။
 
 ## Frontend architecture
 

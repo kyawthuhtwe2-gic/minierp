@@ -25,8 +25,10 @@ function App() {
   async function handleLogout() {
     try {
       await logout()
-    } catch {
-      // Token may already be invalid; sign out locally either way.
+    } catch (err) {
+      // 401 means the token is already invalid, so signing out locally is correct.
+      // Any other failure is rethrown so the UI can show it and keep the session.
+      if (err.status !== 401) throw err
     }
     tokenStore.clear()
     setUser(null)

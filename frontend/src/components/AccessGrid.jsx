@@ -23,9 +23,6 @@ export default function AccessGrid({ user }) {
 
   return (
     <section aria-labelledby="areas-title">
-      <h2 id="areas-title" className="home-section">
-        Your access
-      </h2>
       <div className="home-grid">
         {AREAS.map((area) => {
           const state = access[area.path]

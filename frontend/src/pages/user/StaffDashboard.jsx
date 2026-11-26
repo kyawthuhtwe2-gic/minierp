@@ -31,9 +31,6 @@ export default function StaffDashboard() {
 
   return (
     <section aria-labelledby="staff-title">
-      <h2 id="staff-title" className="home-section">
-        {state.loading ? 'Staff dashboard' : state.message}
-      </h2>
       <div className="home-grid">
         {TASKS.map((t) => (
           <article key={t.title} className="home-card ok">
